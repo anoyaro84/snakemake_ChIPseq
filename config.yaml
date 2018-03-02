@@ -1,0 +1,57 @@
+
+##############################################
+# Global options
+##############################################
+
+Ncores : 5
+
+##############################################
+# Path configuration                        
+##############################################
+
+path:
+    fastq:  'fastq/'
+    qc: 'qc/'
+    log:    'logs/'
+    peaks:  'peaks/'
+    bam:    'bams/'
+    output: 'output/'
+    sratools:   'Softwares/sratoolkit.2.8.0-ubuntu64/bin/'
+    edirect:    'Softwares/edirect/'
+
+##############################################
+# Software options
+##############################################
+
+bwa:
+   reflib:  '~/Resource/refseq/hg19.fa'
+
+macs:
+    bw: 300
+    mfold: '10,30'
+    p_value: '1.00e-7'
+    gsize: 'hs'
+    other: '--nomodel'
+
+macs2:
+    q_thr: 0.01
+    gsize: 'hs'
+    ext: 'phantom' # extension size can be fixed or inferred by phantom peaks (if 'phantom' is given)
+    others: '--nomodel'
+
+
+dfilter:
+   path:    'Softwares/DFilter/' # if not start with '/', it is relative to pipeline location
+   bs:  50  # bandwith parameter
+   ks:  30
+   others: '-refine'
+
+peakcalling: ['macs', 'dfilter'] # now support macs, macs2, dfilter
+
+intersection: ['macs', 'dfilter'] # outcomes of indicated peak callers are used to take intersection
+
+phantompeak:
+   path:    'Softwares/phantompeakqualtools/'
+
+igvtool:
+   genome:  'hg19'

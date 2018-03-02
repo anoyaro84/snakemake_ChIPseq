@@ -1,0 +1,5 @@
+ID,Source,Path,Format
+GSM1139081,GEO,,
+wz123,forge,  http://forge.asdfadfsfa/run123/,bam
+input,local_bam,data/bams/input.bam,bam
+input2,local_fastq,data/fastqs/input2.fastq,fastq
