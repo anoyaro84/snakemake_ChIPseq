@@ -34,8 +34,8 @@ macs:
     other: '--nomodel'
 
 macs2:
-    q_thr: 0.01
-    gsize: 'hs'
+    q_thr: 0.01 # threshold for q-value
+    gsize: 'hs' # genome size
     ext: 'phantom' # extension size can be fixed or inferred by phantom peaks (if 'phantom' is given)
     others: '--nomodel'
 
@@ -43,7 +43,7 @@ macs2:
 dfilter:
    path:    'Softwares/DFilter/' # if not start with '/', it is relative to pipeline location
    bs:  50  # bandwith parameter
-   ks:  30
+   ks:  30  # kernel size
    others: '-refine'
 
 peakcalling: ['macs', 'dfilter'] # now support macs, macs2, dfilter
