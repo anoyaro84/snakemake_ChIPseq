@@ -19,5 +19,5 @@ dependencies:
   - sqlite=3.20.1=hb898158_2
   - tk=8.6.7=hc745277_3
   - zlib=1.2.11=ha838bed_2
-prefix: /home/yo.kim/.conda/envs/MACS
+prefix: ~/.conda/envs/MACS
 

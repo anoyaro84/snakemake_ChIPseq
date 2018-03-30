@@ -70,5 +70,5 @@ dependencies:
   #- tk=8.6.7=h5979e9b_1
 - xz=5.2.3=h2bcbf08_1
 - zlib=1.2.11=hfbfcf68_1
-prefix: /home/yo.kim/miniconda3/envs/phantom
+prefix: ~/.conda/envs/phantom
 

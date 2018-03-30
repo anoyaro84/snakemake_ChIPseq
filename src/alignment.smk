@@ -81,18 +81,19 @@ rule prepare_raw_files:
 
 rule bwa_aln:
     input:
-        PATH_FASTQ + "{sample}.fastq.gz"
+        reads = [PATH_FASTQ + "{sample}.fastq.gz"]
     output:
         PATH_BAM + "{sample,[A-Za-z0-9_-]+}.bam"
     log:
         PATH_LOG + "{sample}.bwa.log"
     params:
         index = REFLIB,
-        sort = 'samtools'
+        sort = 'samtools',
+        extra = config['bwa']['extra']
     threads:
         config['Ncores']
     wrapper:
-        "0.17.4/bio/bwa/mem"
+        "0.22.0/bio/bwa/mem"
 
 
 
