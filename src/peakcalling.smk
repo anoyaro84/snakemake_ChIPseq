@@ -135,31 +135,55 @@ def get_ext(argument, sample):
     else:
         return argument
 
-
-rule MACS2:
-    input:
-        t=PATH_BAM+'{sample}.mq20.bam',
-        i=lambda wildcards: PATH_BAM+PeakCall.loc[PeakCall.Signal == wildcards.sample].Input+".mq20.bam",
-        p=PATH_QC+'{sample}.phantom'
-    log:
-        PATH_LOG + 'macs2_{sample}.log'
-    output:
-        peak=PATH_OUT+'{sample}.macs2'
-    conda:
-        '../env/macs2.yaml'
-    params:
-        name = '{sample}',
-        path = PATH_OUT,
-        q = config['macs2']['q_thr'],
-        g = config['macs2']['gsize'],
-        ext = lambda wildcards: get_ext(config['macs2']['ext'], wildcards.sample),
-        others = config['macs2']['others']
-
-    shell:
-        """
+if config['macs2']['ext'] in ["phantom"]:
+    rule MACS2:
+        input:
+            t=PATH_BAM+'{sample}.mq20.bam',
+            i=lambda wildcards: PATH_BAM+PeakCall.loc[PeakCall.Signal == wildcards.sample].Input+".mq20.bam",
+            p=PATH_QC+'{sample}.phantom'
+        log:
+            PATH_LOG + 'macs2_{sample}.log'
+        output:
+            peak=PATH_OUT+'{sample}.macs2'
+        conda:
+            '../env/macs2.yaml'
+        params:
+            name = '{sample}',
+            path = PATH_OUT,
+            q = config['macs2']['q_thr'],
+            g = config['macs2']['gsize'],
+            ext = lambda wildcards: get_ext(config['macs2']['ext'], wildcards.sample),
+            others = config['macs2']['others']
+        shell:
+            """
             macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir {params.path} -q {params.q} --extsize={params.ext} {params.others} &> {log}
             mv {params.path}/{params.name}_peaks.narrowPeak {output}
-        """
+            """
+
+
+else:
+    rule MACS2:
+        input:
+            t=PATH_BAM+'{sample}.mq20.bam',
+            i=lambda wildcards: PATH_BAM+PeakCall.loc[PeakCall.Signal == wildcards.sample].Input+".mq20.bam"
+        log:
+            PATH_LOG + 'macs2_{sample}.log'
+        output:
+            peak=PATH_OUT+'{sample}.macs2'
+        conda:
+            '../env/macs2.yaml'
+        params:
+            name = '{sample}',
+            path = PATH_OUT,
+            q = config['macs2']['q_thr'],
+            g = config['macs2']['gsize'],
+            ext = lambda wildcards: get_ext(config['macs2']['ext'], wildcards.sample),
+            others = config['macs2']['others']
+        shell:
+            """
+                macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir {params.path} -q {params.q} --extsize={params.ext} {params.others} &> {log}
+                mv {params.path}/{params.name}_peaks.narrowPeak {output}
+            """
 
 
 rule Intersection:
