@@ -25,6 +25,10 @@ path:
 
 bwa:
    reflib:  '~/Resource/refseq/hg19.fa'
+   extra: ''
+
+picard:
+    options: ''
 
 macs:
     bw: 300

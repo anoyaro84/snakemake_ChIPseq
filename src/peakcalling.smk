@@ -45,17 +45,34 @@ def path_relative(path):
 #    log:
 #        PATH_LOG + 'sorting_{sample}.log'
 #    output:
-#        temp(PATH_BAM+"{sample}.sorted.bam")
+#        temp(PATH_BAM+"{sample}.marked.bam")
 #    shell:
 #        """
 #            samtools sort {input} -o {output} 2> {log}
 #        """
 
+rule picard_mark_duplicates:
+    input:
+        PATH_BAM+'{sample}.bam'
+    output:
+        bam= PATH_BAM + '{sample}.marked.bam'
+        metrics=path.join(report_dir, 'qc', 'mark_duplicates', '{sample}.metrics')
+    params:
+        options=config['picard']['options']
+    conda:
+        '../env/picard.yaml'
+    log:
+        PATH_LOG + 'picard_{sample}.log'
+    shell:
+        """
+            picard MarkDuplicates INPUT={input} OUTPUT={output.bam} METRICS_FILE={output.metrics} {params.options} 2> {log}
+        """
+
 rule mapping_quality_filtering:
     message:
         "mapq filtering"
     input:
-        PATH_BAM+"{sample}.bam"
+        PATH_BAM+"{sample}.marked.bam"
     log:
         PATH_LOG + 'filtering_{sample}.log'
     output:
