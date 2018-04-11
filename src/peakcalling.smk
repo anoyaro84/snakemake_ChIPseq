@@ -56,7 +56,7 @@ rule picard_mark_duplicates:
         PATH_BAM+'{sample}.bam'
     output:
         bam= PATH_BAM + '{sample}.marked.bam'
-        metrics=path.join(report_dir, 'qc', 'mark_duplicates', '{sample}.metrics')
+        metrics=PATH_QC+'{sample}.dup.metrics'
     params:
         options=config['picard']['options']
     conda:
