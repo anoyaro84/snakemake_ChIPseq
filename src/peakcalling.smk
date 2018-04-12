@@ -148,7 +148,7 @@ def get_ext(argument, sample):
         phantom = PATH_QC + sample + '.phantom'
         command = "awk '{print $3 }' < " + phantom + """ | tr ","  "\t" | awk '{if($1!=0) print $1; else print $2}' """
         p = sp.Popen([command], stdout=sp.PIPE, shell=True)
-        return p.stdout.read().decode('utf-8').strip('\n')
+        return chr(float(p.stdout.read().decode('utf-8').strip('\n'))/2)
     else:
         return argument
 
