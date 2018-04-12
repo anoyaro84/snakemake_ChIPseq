@@ -81,7 +81,7 @@ rule prepare_raw_files:
 
 rule bwa_aln:
     input:
-        reads = [PATH_FASTQ + "{sample}.fastq.gz"]
+        reads = [PATH_FASTQ + "{sample}.trimmed.fastq.gz"]
     output:
         PATH_BAM + "{sample,[A-Za-z0-9_-]+}.bam"
     log:
@@ -96,25 +96,18 @@ rule bwa_aln:
         "0.22.0/bio/bwa/mem"
 
 
-
-#rule bwa_aln:
-#    input:
-#        PATH_FASTQ + "{sample}.fastq.gz"
-#    output:
-#        sai=temp(PATH_FASTQ + "{sample}.sai"),
-#        sam=temp(PATH_FASTQ + "{sample}.sam"),
-#        bam=PATH_OUT + "{sample}.bam"
-#    log:
-#        aln=PATH_LOG + "{sample}.aln.log",
-#        samse=PATH_LOG + "{sample}.samse.log",
-#        samtool=PATH_LOG + "{sample}.samtobam.log"
-#    params:
-#        RefSeq
-#    shell:
-#        """
-#        bwa aln {params} {input} > {output.sai} 2> {log.aln}\n
-#        bwa samse {params} {output.sai} {input} > {output.sam} 2> {log.samse}\n
-#        samtools view -Sb {output.sam} > {output.bam} 2> {log.samtool}
-#        """
+rule cutadapt:
+    input:
+        PATH_FASTQ+'{sample}.fastq.gz'
+    output:
+        fastq=PATH_FASTQ+'{sample}.trimmed.fastq.gz',
+        qc=PATH_QC+'{sample}_cutadapt.txt'
+    params:
+        config['cutadapt']['option']
+    log:
+        PATH_LOG + '{sample}_cutadapt.log'
+    wrapper:
+        "0.22.0/bio/cutadapt/se"
 
 
+ruleorder: cutadapt > get_fastq

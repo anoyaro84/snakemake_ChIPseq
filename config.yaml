@@ -27,6 +27,9 @@ bwa:
    reflib:  '~/Resource/refseq/hg19.fa'
    extra: ''
 
+cutadapt:
+   option: ''
+
 picard:
     options: ''
 
