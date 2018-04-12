@@ -172,7 +172,7 @@ if config['macs2']['ext'] in ["phantom"]:
             others = config['macs2']['others']
         shell:
             """
-               fragment="awk '{print $3 }' < {input.p} | tr ',' '\t' | awk '{if($1=0) print $1; else print $2}'"
+               fragment="awk '{{print $3 }}' < {input.p} | tr ',' '\t' | awk '{{if($1=0) print $1; else print $2}}'"
                ((frgament=$fragment/2))
                macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir {params.path} -q {params.q} --extsize=$fragment &> {log}")
             """
