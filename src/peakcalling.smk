@@ -170,10 +170,12 @@ if config['macs2']['ext'] in ["phantom"]:
             q = config['macs2']['q_thr'],
             g = config['macs2']['gsize'],
             others = config['macs2']['others']
-        run:
-            fragment = lambda wildcards: get_ext(config['macs2']['ext'], wildcards.sample)
-            shell("macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir {params.path} -q {params.q} --extsize=" + fragment + " {params.others} &> {log}")
-            shell("mv {params.path}/{params.name}_peaks.narrowPeak {output}")
+        shell:
+            """
+               fragment="awk '{print $3 }' < {input.p} | tr ',' '\t' | awk '{if($1=0) print $1; else print $2}'"
+               ((frgament=$fragment/2))
+               macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir {params.path} -q {params.q} --extsize=$fragment &> {log}")
+            """
 
 else:
     rule MACS2:
