@@ -110,4 +110,4 @@ rule cutadapt:
         "0.22.0/bio/cutadapt/se"
 
 
-ruleorder: cutadapt > get_fastq
+ruleorder: cutadapt > prepare_raw_files 
