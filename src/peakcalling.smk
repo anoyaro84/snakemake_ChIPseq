@@ -55,7 +55,7 @@ rule picard_mark_duplicates:
     input:
         PATH_BAM+'{sample}.bam'
     output:
-        bam= PATH_BAM + '{sample}.marked.bam'
+        bam= PATH_BAM + '{sample}.marked.bam',
         metrics=PATH_QC+'{sample}.dup.metrics'
     params:
         options=config['picard']['options']
@@ -169,14 +169,11 @@ if config['macs2']['ext'] in ["phantom"]:
             path = PATH_OUT,
             q = config['macs2']['q_thr'],
             g = config['macs2']['gsize'],
-            ext = lambda wildcards: get_ext(config['macs2']['ext'], wildcards.sample),
             others = config['macs2']['others']
-        shell:
-            """
-            macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir {params.path} -q {params.q} --extsize={params.ext} {params.others} &> {log}
-            mv {params.path}/{params.name}_peaks.narrowPeak {output}
-            """
-
+        run:
+            fragment = lambda wildcards: get_ext(config['macs2']['ext'], wildcards.sample)
+            shell("macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir {params.path} -q {params.q} --extsize=" + fragment + " {params.others} &> {log}")
+            shell("mv {params.path}/{params.name}_peaks.narrowPeak {output}")
 
 else:
     rule MACS2:
