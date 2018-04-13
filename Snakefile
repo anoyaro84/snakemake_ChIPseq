@@ -60,7 +60,7 @@ for local in Local_BAM:
 
 PATH_LOCAL_FASTQ = dict()
 for local in Local_FASTQ:
-    PATH_LOCAL_FASTQ[local] = DataTable[DataTable.ID == local].Path.tolist()[0]
+    PATH_LOCAL_FASTQ[local] = glob.glob(DataTable[DataTable.ID == local].Path.tolist()[0] + local + '*.fastq.gz')[0]
 
 
 rule all:
