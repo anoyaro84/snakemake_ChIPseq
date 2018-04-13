@@ -60,7 +60,13 @@ for local in Local_BAM:
 
 PATH_LOCAL_FASTQ = dict()
 for local in Local_FASTQ:
-    PATH_LOCAL_FASTQ[local] = glob.glob(DataTable[DataTable.ID == local].Path.tolist()[0] + local + '*.fastq.gz')[0]
+    path = DataTable[DataTable.ID == local].Path.tolist()[0]
+    tmp = glob.glob(path+local+'*.fastq.gz')
+    if len(tmp) == 0:
+        raise Exception("No matching pattern with id=" + local + " at " + path)
+    elif len(tmp) > 1:
+        raise Exception("Multiple files find with id=" + local + " at " + path)
+    PATH_LOCAL_FASTQ[local] = tmp[0]
 
 
 rule all:
