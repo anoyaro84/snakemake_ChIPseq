@@ -53,7 +53,10 @@ Local_FASTQ = DataTable.loc[np.intersect1d(np.where(DataTable.Source=='local'), 
 ALLID = GEOID + WZID_BAM + WZID_FASTQ + Local_BAM + Local_FASTQ
 PEAKID = PeakCall.Signal.tolist()
 
-PATH_DATA = DataTable.loc[DataTable.Source=='forge'].Path.value_counts().index.tolist()
+PATH_BAM_DATA =  DataTable.loc[np.intersect1d(np.where(DataTable.Source=='forge'), np.where(DataTable.Format =='bam'))].Path.tolist()
+PATH_FASTQ_DATA = DataTable.loc[np.intersect1d(np.where(DataTable.Source=='forge'), np.where(DataTable.Format =='fastq'))].Path.tolist()
+
+
 PATH_LOCAL_BAM = dict()
 for local in Local_BAM:
     PATH_LOCAL_BAM[local] = DataTable[DataTable.ID == local].Path.tolist()[0]

@@ -31,7 +31,8 @@ cutadapt:
    option: ''
 
 picard:
-    options: ''
+    options: 'VALIDATION_STRINGENCY=LENIENT'
+    threads: 5
 
 macs:
     bw: 300

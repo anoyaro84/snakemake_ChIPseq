@@ -37,7 +37,28 @@ def get_paths(IDs, PATH_DATA, ext="bam"):
         Files[ID] = []
         FullPath[ID] = []
 
-    for PATH in list(PATH_DATA):
+#    for PATH in list(PATH_DATA):
+#        print("reading path:")
+#        print(PATH)
+
+#        response = Request(PATH)
+#        html = urlopen(response)
+
+#        print("..success")
+#        print("")
+
+        # find the link for files
+#        print("find specified files...")
+#        soup = BeautifulSoup(html.read(), "html.parser")
+
+#        for link in soup.find_all('a'):
+#            name = link.get('href')
+#            for ID in IDs:
+#                if ID.lower() in name.lower() and name.endswith(ext):
+#                    Files[ID] = list(set(Files[ID]).union(set([name])))
+#                    FullPath[ID] = list(set([PATH + name]).union(set(FullPath[ID])))
+
+    for ID, PATH in zip(list(IDs), list(PATH_DATA)):
         print("reading path:")
         print(PATH)
 
@@ -53,11 +74,9 @@ def get_paths(IDs, PATH_DATA, ext="bam"):
 
         for link in soup.find_all('a'):
             name = link.get('href')
-            for ID in IDs:
-                if ID.lower() in name.lower() and name.endswith(ext):
-                    Files[ID] = list(set(Files[ID]).union(set([name])))
-                    FullPath[ID] = list(set([PATH + name]).union(set(FullPath[ID])))
-
+            if ID.lower() in name.lower() and name.endswith(ext):
+                Files[ID] = list(set(Files[ID]).union(set([name])))
+                FullPath[ID] = list(set([PATH + name]).union(set(FullPath[ID])))
     # check if all specified files can be found
     for ID in IDs:
         if len(Files[ID]) == 0:

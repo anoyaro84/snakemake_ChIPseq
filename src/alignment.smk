@@ -65,8 +65,8 @@ rule prepare_raw_files:
         expand(PATH_FASTQ + '{sample}.fastq.gz', sample=GEOID+WZID_FASTQ+Local_FASTQ),
         expand(PATH_BAM + '{sample}.bam', sample=WZID_BAM+Local_BAM),
     run:
-        Files, FullPath_BAM = get_paths(WZID_BAM, PATH_DATA, ext='bam')
-        Files, FullPath_FASTQ = get_paths(WZID_FASTQ, PATH_DATA, ext='fastq.gz')
+        Files, FullPath_BAM = get_paths(WZID_BAM, PATH_BAM_DATA, ext='bam')
+        Files, FullPath_FASTQ = get_paths(WZID_FASTQ, PATH_FASTQ_DATA, ext='fastq.gz')
 
         for local in PATH_LOCAL_BAM:
             copyfile(PATH_LOCAL_BAM[local], PATH_BAM + local + '.bam')

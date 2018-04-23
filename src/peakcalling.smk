@@ -39,21 +39,21 @@ def path_relative(path):
 # Processing ChIP-seq data
 
 
-#rule sorting_bam:
-#    input:
-#        PATH_OUT+"{sample}.bam"
-#    log:
-#        PATH_LOG + 'sorting_{sample}.log'
-#    output:
-#        temp(PATH_BAM+"{sample}.marked.bam")
-#    shell:
-#        """
-#            samtools sort {input} -o {output} 2> {log}
-#        """
+rule sorting_bam:
+    input:
+        PATH_BAM+"{sample}.bam"
+    log:
+        PATH_LOG + 'sorting_{sample}.log'
+    output:
+        temp(PATH_BAM+"{sample}.sort.bam")
+    shell:
+        """
+            samtools sort {input} -o {output} 2> {log}
+        """
 
 rule picard_mark_duplicates:
     input:
-        PATH_BAM+'{sample}.bam'
+        PATH_BAM+'{sample}.sort.bam'
     output:
         bam= PATH_BAM + '{sample}.marked.bam',
         metrics=PATH_QC+'{sample}.dup.metrics'
@@ -61,11 +61,12 @@ rule picard_mark_duplicates:
         options=config['picard']['options']
     conda:
         '../env/picard.yaml'
+    threads: config['picard']['threads']
     log:
         PATH_LOG + 'picard_{sample}.log'
     shell:
         """
-            picard MarkDuplicates INPUT={input} OUTPUT={output.bam} METRICS_FILE={output.metrics} {params.options} 2> {log}
+            picard MarkDuplicates INPUT={input} OUTPUT={output.bam} METRICS_FILE={output.metrics} {params.options} -XX:ParallelGCThreads={threads}  2> {log}
         """
 
 rule mapping_quality_filtering:
@@ -101,6 +102,7 @@ rule Dfilter_peakcalling:
         data=PATH_BAM+"{sample}.mq20.bed",
         input=lambda wildcards: PATH_BAM+ PeakCall.loc[PeakCall.Signal == wildcards.sample].Input +".mq20.bed"
     shadow: "shallow"
+    singularity: srcdir('../') + '/ubuntu.img' 
     params:
         bs = config['dfilter']['bs'],
         ks = config['dfilter']['ks'],
