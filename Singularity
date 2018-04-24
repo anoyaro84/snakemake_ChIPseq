@@ -18,7 +18,6 @@ From: ubuntu:14.04
 	conda update conda
 
 	apt-get -qq -y remove curl bzip2
-	apt-get install -y libxrender
 
 %environment	
 	export PATH=/usr/local/bin:$PATH
