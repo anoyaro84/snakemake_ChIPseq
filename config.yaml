@@ -42,7 +42,8 @@ macs:
     other: '--nomodel'
 
 macs2:
-    q_thr: 0.01 # threshold for q-value
+    p_or_q: 'q' # either p-value(p) or q-value(q) is used
+    thr: 0.01 # threshold for p/q-value
     gsize: 'hs' # genome size
     ext: 'phantom' # extension size can be fixed or inferred by phantom peaks (if 'phantom' is given)
     others: '--nomodel'

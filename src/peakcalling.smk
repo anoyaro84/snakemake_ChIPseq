@@ -102,7 +102,7 @@ rule Dfilter_peakcalling:
         data=PATH_BAM+"{sample}.mq20.bed",
         input=lambda wildcards: PATH_BAM+ PeakCall.loc[PeakCall.Signal == wildcards.sample].Input +".mq20.bed"
     shadow: "shallow"
-    singularity: srcdir('../') + '/ubuntu.img' 
+    singularity: 'shub://anoyaro84/snakemake_ChIPseq'
     params:
         bs = config['dfilter']['bs'],
         ks = config['dfilter']['ks'],
@@ -169,14 +169,16 @@ if config['macs2']['ext'] in ["phantom"]:
         params:
             name = '{sample}',
             path = PATH_OUT,
-            q = config['macs2']['q_thr'],
+            thr = config['macs2']['thr'],
+            p_or_q = config['macs2']['p_or_q'],
             g = config['macs2']['gsize'],
             others = config['macs2']['others']
         shell:
             """
-               fragment="awk '{{print $3 }}' < {input.p} | tr ',' '\\t' | awk '{{if($1=0) print $1; else print $2}}'"
-               ((frgament=$fragment/2))
-               macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir {params.path} -q {params.q} --extsize=$fragment &> {log}")
+               fragment=`awk '{{print $3}}' < {input.p} | tr ',' '\\t' | awk '{{if($1!=0) print $1; else print $2}}'`
+               ((fragment=$fragment/2))
+               macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir {params.path} -{params.p_or_q} {params.thr} --extsize=$fragment {params.others} &> {log}
+               mv {params.path}/{params.name}_peaks.narrowPeak {output}
             """
 
 else:
@@ -193,13 +195,14 @@ else:
         params:
             name = '{sample}',
             path = PATH_OUT,
-            q = config['macs2']['q_thr'],
+            thr = config['macs2']['thr'],
+            p_or_q= config['macs2']['p_or_q'],
             g = config['macs2']['gsize'],
             ext = lambda wildcards: get_ext(config['macs2']['ext'], wildcards.sample),
             others = config['macs2']['others']
         shell:
             """
-                macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir {params.path} -q {params.q} --extsize={params.ext} {params.others} &> {log}
+                macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir -{params.p_or_q} {params.thr} --extsize={params.ext} {params.others} &> {log}
                 mv {params.path}/{params.name}_peaks.narrowPeak {output}
             """
 
@@ -217,7 +220,6 @@ rule Intersection:
     shell:
         """
            bedtools intersect -a {input.a}  -b {input.b} > {output.normal}
-           awk 'a !~ $4; {{a = $4}}' {output.normal} > {output.filtered}
            sed -e 's/^/chr/' {output.filtered} > {output.chr}
         """
 
