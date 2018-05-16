@@ -39,7 +39,6 @@ macs:
     mfold: '10,30'
     p_value: '1.00e-7'
     gsize: 'hs'
-    outcome: 'peaks.narrowPeak' # suffix of outcome file to be used. For broad peaks, replace it with '_peaks.broadPeak'
     other: '--nomodel' # for broad peak, --broad option and consider also add --broad-cutoff
 
 macs2:
@@ -47,7 +46,9 @@ macs2:
     thr: 0.01 # threshold for p/q-value
     gsize: 'hs' # genome size
     ext: 'phantom' # extension size can be fixed or inferred by phantom peaks (if 'phantom' is given)
-    others: '--nomodel'
+    outcome: 'peaks.narrowPeak' # suffix of outcome file to be used. For broad peaks, replace it with 'peaks.broadPeak'
+    others: '--nomodel' # for broad peak, --broad option and consider also add --broad-cutoff
+
 
 
 dfilter:
