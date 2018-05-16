@@ -39,7 +39,8 @@ macs:
     mfold: '10,30'
     p_value: '1.00e-7'
     gsize: 'hs'
-    other: '--nomodel'
+    outcome: 'peaks.narrowPeak' # suffix of outcome file to be used. For broad peaks, replace it with '_peaks.broadPeak'
+    other: '--nomodel' # for broad peak, --broad option and consider also add --broad-cutoff
 
 macs2:
     p_or_q: 'q' # either p-value(p) or q-value(q) is used
