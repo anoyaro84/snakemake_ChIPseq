@@ -13,6 +13,7 @@ From: ubuntu:14.04
 	apt-get -qq -y install libxt6
 	apt-get -qq -y install libxmu6
 	apt-get -qq -y install python2.7
+	apt-get -qq- -y install gawk
 
 	conda install -y python=2
 	conda update conda
