@@ -19,10 +19,11 @@ From: ubuntu:14.04
 	conda install -y python=2
 	conda update conda
 
-	apt-get -qq -y remove curl bzip2
 	
 	curl -sSL http://collaborations.gis.a-star.edu.sg/~cmb6/kumarv1/dfilter/DFilter-v1.5.tar.gz -o /usr/local/Dfilter.tar.gz
 	tar -xvf /usr/local/DFilter.tar.gz
+
+	apt-get -qq -y remove curl bzip2 tar
 
 %environment	
 	export PATH=/usr/local/bin:$PATH
