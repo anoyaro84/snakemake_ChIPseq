@@ -115,8 +115,7 @@ rule Dfilter_peakcalling:
         PATH_LOG+"dfilter_{sample}.log"
     shell:
         """
-            {params.path}run_dfilter.sh -d={input.data} -c={input.input} -o={output.peak} -bs={params.bs} -ks={params.ks} {params.others} &> {log}
-            awk '$NF == 0' {output.peak} > {output.peak_out}
+            {params.path}run_dfilter.sh -d={input.data} -c={input.input} -o={output.peak} -bs={params.bs} -ks={params.ks} {params.others} &> {log} || awk 'NF == 0' {output.peak} > {output.peak_out}
         """
 
 rule MACS_peakcalling:
@@ -172,12 +171,12 @@ if config['macs2']['ext'] in ["phantom"]:
             thr = config['macs2']['thr'],
             p_or_q = config['macs2']['p_or_q'],
             g = config['macs2']['gsize'],
-            suffix = conifg['macs2']['outcome'],
+            suffix = config['macs2']['outcome'],
             others = config['macs2']['others']
         shell:
             """
                fragment=`awk '{{print $3}}' < {input.p} | tr ',' '\\t' | awk '{{if($1!=0) print $1; else print $2}}'`
-               ((fragment=$fragment/2))
+               ((fragment=$fragment))
                macs2 callpeak -t {input.t} -c {input.i} -f BAM --gsize {params.g} -n {params.name} --outdir {params.path} -{params.p_or_q} {params.thr} --extsize=$fragment {params.others} &> {log}
                mv {params.path}/{params.name}_{params.suffix} {output}
             """
