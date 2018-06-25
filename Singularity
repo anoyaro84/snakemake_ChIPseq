@@ -4,7 +4,7 @@ From: ubuntu:14.04
 %post
 	apt-get -y update
 	apt-get install -y libxp6
-	apt-get -qq -y install curl tar
+	apt-get -qq -y install curl
 	curl -sSL https://repo.continuum.io/archive/Anaconda2-5.0.1-Linux-x86_64.sh -o /tmp/miniconda.sh
 	curl -sSL http://collaborations.gis.a-star.edu.sg/~cmb6/kumarv1/dfilter/DFilter-v1.5.tar.gz -o /tmp/Dfilter.tar.gz
 	tar -xvf /tmp/Dfilter.tar.gz -C /usr/local/
@@ -20,7 +20,7 @@ From: ubuntu:14.04
 	conda install -y python=2
 	conda update conda
 
-	apt-get -qq -y remove curl bzip2 tar
+	apt-get -qq -y remove curl bzip2
 
 %environment	
 	export PATH=/usr/local/bin:$PATH
