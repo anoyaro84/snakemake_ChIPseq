@@ -107,7 +107,6 @@ rule Dfilter_peakcalling:
         bs = config['dfilter']['bs'],
         ks = config['dfilter']['ks'],
         others = config['dfilter']['others'],
-        path = path_relative(config['dfilter']['path'])
     output:
         peak=PATH_PEAKS+"{sample}.dfilter",
         peak_out=PATH_OUT+"{sample}.dfilter"
@@ -115,7 +114,9 @@ rule Dfilter_peakcalling:
         PATH_LOG+"dfilter_{sample}.log"
     shell:
         """
-            {params.path}run_dfilter.sh -d={input.data} -c={input.input} -o={output.peak} -bs={params.bs} -ks={params.ks} {params.others} &> {log} || awk 'NF == 0' {output.peak} > {output.peak_out}
+            run_dfilter.sh -d={input.data} -c={input.input} -o={output.peak} -bs={params.bs} -ks={params.ks} {params.others} &> {log}"""
+        """
+            awk 'NF == 0' {output.peak} > {output.peak_out}
         """
 
 rule MACS_peakcalling:

@@ -38,7 +38,7 @@ if len(config['intersection']) == 1:
     raise ValueError('Taking intersection is specified, but only one peak file is given.')
 
 # adding paths for using MACS/DFILTER
-os.environ["PATH"] = srcdir('.') + '/' + config['dfilter']['path']+":"+os.environ["PATH"]
+#os.environ["PATH"] = srcdir('.') + '/' + config['dfilter']['path']+":"+os.environ["PATH"]
 
 # get IDs
 DataTable = pd.read_csv('DataList.csv')
