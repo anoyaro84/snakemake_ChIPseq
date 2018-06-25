@@ -26,3 +26,4 @@ From: ubuntu:14.04
 	export PATH=/usr/local/bin:$PATH
 	export PATH=/usr/lib/x86_64-linux-gnu/:/usr/local/bin:$PATH
 	export PATH=/usr/local/DFilter1.5/:$PATH
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/DFilter1.5/R2013b/runtime/glnxa64:/usr/local/DFilter1.5/R2013b/bin/glnxa64
