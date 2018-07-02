@@ -46,6 +46,8 @@ rule sorting_bam:
         PATH_LOG + 'sorting_{sample}.log'
     output:
         temp(PATH_BAM+"{sample}.sort.bam")
+    conda:
+        '../env/samtools.yaml'
     shell:
         """
             samtools sort {input} -o {output} 2> {log}
@@ -108,16 +110,25 @@ rule Dfilter_peakcalling:
         ks = config['dfilter']['ks'],
         others = config['dfilter']['others'],
     output:
-        peak=PATH_PEAKS+"{sample}.dfilter",
-        peak_out=PATH_OUT+"{sample}.dfilter"
+        peak=PATH_PEAKS+"{sample}.dfilter"
     log:
         PATH_LOG+"dfilter_{sample}.log"
     shell:
         """
             run_dfilter.sh -d={input.data} -c={input.input} -o={output.peak} -bs={params.bs} -ks={params.ks} {params.others} &> {log}"""
+
+rule remove_first_line:
+    message:
+        "removing first line from dfilter outcome"
+    input:
+        PATH_PEAKS + '{sample}.dfilter'
+    output:
+        PATH_OUT + '{sample}.dfilter'
+    shell:
         """
-            awk 'NF == 0' {output.peak} > {output.peak_out}
+          sed 1d {input} > {output}
         """
+
 
 rule MACS_peakcalling:
     message:
@@ -215,12 +226,12 @@ rule Intersection:
         a=lambda wildcards: PATH_OUT+wildcards.sample+'.'+INTERSECT[0],
         b=lambda wildcards: ','.join([PATH_OUT+wildcards.sample+'.'+ext for ext in INTERSECT[1:]])
     output:
-        normal=temp(PATH_PEAKS+"{sample}.intersect"),
+#        normal=temp(PATH_PEAKS+"{sample}.intersect"),
         filtered=PATH_OUT+"{sample}.peak.intersect",
         chr=PATH_OUT+"{sample}.peak.chr.intersect"
     shell:
         """
-           bedtools intersect -a {input.a}  -b {input.b} > {output.normal}
+           bedtools intersect -a {input.a}  -b {input.b} > {output.filtered}
            sed -e 's/^/chr/' {output.filtered} > {output.chr}
         """
 
