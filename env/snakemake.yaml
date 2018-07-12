@@ -61,5 +61,5 @@ dependencies:
 #- snakemake=5.1.5
 - pip:
   - bioepic==0.2.5
-  - "--editable=git+https://bitbucket.org/snakemake/snakemake.git@v4.7.0#egg=snakemake"
+  - "--editable=git+https://bitbucket.org/snakemake/snakemake.git@v5.1.5#egg=snakemake"
 #prefix: /home/NFS/users/yo.kim/miniconda3/envs/SnakeMake
