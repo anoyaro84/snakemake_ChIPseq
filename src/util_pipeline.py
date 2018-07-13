@@ -2,7 +2,9 @@ from subprocess import PIPE, Popen
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 import urllib.request
-import os
+import os, glob
+from pathlib import Path
+import subprocess as sp
 
 def query_SRX(GSM_ACC, path_ncbitoolkit='/home/NFS/users/yo.kim/lib/softwares/edirect/'):
     p1 = Popen([path_ncbitoolkit + "esearch", "-db", "gds", "-query", '"' + GSM_ACC  +'"'],stdout=PIPE)
@@ -86,15 +88,16 @@ def get_paths(IDs, PATH_DATA, ext="bam"):
 
     return Files, FullPath
 
-
-def fastq_dump(sample):
-    SRRs = query_SRR(str(sample)) # get SRR accession from GSM ID
-
+def fastq_dump(sample, PATH_FASTQ, PATH_LOG, PATH_EDIRECT, PATH_SRATOOL):
+    print(sample)
+    SRRs = query_SRR(str(sample), path_ncbitoolkit=PATH_EDIRECT) # get SRR accession from GSM ID
 
     for i in range(len(SRRs)):
         SRRs[i] = SRRs[i].split("\n")[0]
 
     print(SRRs)
+    if not os.path.exists(PATH_LOG):
+        os.makedirs(PATH_LOG)
 
     for SRR in SRRs:
         stdout_fn = Path(PATH_LOG + SRR + ".fastq_dump.log")
@@ -104,4 +107,35 @@ def fastq_dump(sample):
                 p = sp.run([PATH_SRATOOL+'fastq-dump', '--split-3', '--skip-technical',
                             '-I', '--gzip', '-O', PATH_FASTQ, SRR], stderr=stdout_f)
 
+    if len(SRRs)>1:
+        isSE = len(glob.glob(PATH_FASTQ + "/" + SRRs[0] + '*.fastq.gz'))  == 1
+        if isSE: #in case of single-end
+            outfile = Path(PATH_FASTQ+str(sample)+'.fastq.gz')
+            command = ['cat']
+            for SRR in SRRs:
+                command.append(PATH_FASTQ+SRR+'.fastq.gz')
+            with outfile.open('w') as out:
+                print(command)
+                p = sp.run(command, stdout=out)
+        else: #in case of paired-end
+            outfile1 = Path(PATH_FASTQ + str(sample) + '_1.fastq.gz')
+            outfile2 = Path(PATH_FASTQ + str(sample) + '_2.fastq.gz')
+            command1 = ['cat']
+            command2 = ['cat']
+            for SRR in SRRs:
+                command1.append(PATH_FASTQ+SRR+'_1.fastq.gz')
+                command2.append(PATH_FASTQ+SRR+'_2.fastq.gz')
+                with outfile1.open('w') as out:
+                    print(command1)
+                    p = sp.run(command1, stdout=out)
+                with outfile2.open('w') as out:
+                    print(command2)
+                    p = sp.run(command2, stdout=out)
+    else:
+        isSE = len(glob.glob(PATH_FASTQ + '/' + SRRs[0] + '*.fastq.gz')) == 1
+        if isSE:
+            p = sp.run(['mv', PATH_FASTQ + SRRs[0] + '.fastq.gz', PATH_FASTQ + str(sample) + '.fastq.gz'])
+        else:
+            p = sp.run(['mv', PATH_FASTQ + SRRs[0] + '_1.fastq.gz', PATH_FASTQ + str(sample) + '_1.fastq.gz'])
+            p = sp.run(['mv', PATH_FASTQ + SRRs[0] + '_2.fastq.gz', PATH_FASTQ + str(sample) + '_2.fastq.gz'])
 
