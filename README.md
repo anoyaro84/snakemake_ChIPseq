@@ -6,14 +6,14 @@ The pipeline obtains ChIP-seq data from diverse sources (remote/local path or GE
 
 Roughly, the pipeline takes the following steps to produce the outcome:
 
-- downloading raw data (either bam/fastq files) from the specified locations (local, remote, or GEO) in DataList.csv
-- alignment with bwa-mem (in case of fastq files)
-- marking duplicate reads with picard
-- removing low-quality reads (retain reads with mapping quality > 20)
-- peak calling with MACS1.4/MACS2/DFilter (can choose which one to use)
+- Downloading raw data (either bam/fastq files) from the specified locations (local, remote, or GEO) in DataList.csv
+- Alignment with bwa-mem (in case of fastq files)
+- Marking duplicate reads with picard
+- Removing low-quality reads (retain reads with mapping quality > 20)
+- Peak calling with MACS1.4/MACS2/DFilter (support more than one peak callers)
 - Taking intersection between the peaks
 
-Note that PeakPairs.csv is used to specify ChIP-seq vs input pair specification, and config.yaml is used for specifiying optional parameters.
+Note that PeakPairs.csv is used to specify ChIP-seq vs input pairs, and config.yaml is used for specifiying optional parameters in softwares.
 
 ## Installation ##
 
@@ -28,13 +28,17 @@ cd snakemake_ChIPseq
 conda env create --file env/snakemake.yaml
 ```
 
-I recommend to run the pipeline from a different location than pipeline path, like below:
+We recommend to run the pipeline from a different location than pipeline path, like below:
 
 ```bash
 snakemake -s PATH_TO_PIPELINE/Snakefile --use-conda --use-singularity --cores=24
 ```
 
-Note that the pipeline assumes there is the following three files available at the location where the pipeline is executed:
+With --use-conda option, the pipeline will create environments to run rules based on .yaml files in env/.
+The --use-singulairty option applies only to DFilter peak caller. The singularity container holds a virtual environment of Ubuntu with DFilter installed.
+
+
+Note that the pipeline assumes that there is the following three files available at the location where the pipeline is executed:
 - config.yaml
 - DataList.csv
 - PeakPairs.csv
