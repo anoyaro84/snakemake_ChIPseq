@@ -83,7 +83,8 @@ rule all:
     input:
         expand(PATH_OUT + '{sample}.{format}', sample = PEAKID, format=PEAKCALLER),
         expand(PATH_OUT + '{sample}.tdf', sample = ALLID),
-        expand(PATH_QC + '{sample}.phantom', sample = PEAKID)
+        expand(PATH_QC + '{sample}.phantom', sample = PEAKID),
+        PATH_OUT + 'multiqc.log'
 
 include: 'src/alignment.smk'
 include: 'src/peakcalling.smk'

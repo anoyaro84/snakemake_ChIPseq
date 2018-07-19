@@ -31,7 +31,7 @@ rule multiqc:
     input:
         expand(PATH_QC+"{sample}_fastqc.html", sample=ALLID)
     output:
-        PATH_QC + "/multiqc_report.html"
+        PATH_OUT + "/multiqc_report.html"
     log:
         "logs/multiqc.log"
     wrapper:
