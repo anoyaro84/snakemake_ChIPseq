@@ -23,10 +23,18 @@ The pipeline is preliminary used in linux environment with conda/singularity ava
 For downloading repository & creating evnironment:
 
 ```bash
-git clone https://github.com/anoyaro84/snakemake_ChIPseq/edit/master/README.md
+git clone https://github.com/anoyaro84/snakemake_ChIPseq
 cd snakemake_ChIPseq
 conda env create --file env/snakemake.yaml
+
+# install phantompeak tools
+git submodule init
+git submodule update
 ```
+
+The most of softwares used in the pipeline is installed by conda or excuted in wrapper.
+Only exception is the phantompeak, the software used for estimating the fragment length that can be used by MACS2.
+Phantompeak tools is included as a submodule, for which you can install with the last two commands.
 
 We recommend to run the pipeline from a different location than pipeline path, like below:
 
